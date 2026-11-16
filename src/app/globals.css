@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+/*
+ * MOVE design tokens. This is the single file to edit to re-theme the app —
+ * every color/font utility (bg-card, text-muted, border-line, font-display, …)
+ * is generated from here. The product is dark-only; there is no light theme.
+ */
+@theme {
+  --color-bg: #000000;
+  --color-soft: #0c0c0c;
+  --color-card: #121212;
+  --color-raised: #1a1a1a;
+  --color-line: #262626;
+  --color-line-strong: #6b6b6b;
+  --color-muted: #9a9a9a;
+
+  /* Semantic status aliases so feature code never hardcodes a raw Tailwind color. */
+  --color-success: #34d399; /* emerald-400 */
+  --color-warning: #fbbf24; /* amber-400 */
+  --color-danger: #f87171; /* red-400 */
+  --color-info: #60a5fa; /* blue-400 */
+
+  /* Hue is reserved for the three services; every other chart series is a gray. */
+  --color-performance: #3987e5;
+  --color-rehab: #d95926;
+  --color-recovery: #199e70;
+  --color-chart-1: #ececec;
+  --color-chart-2: #8a8a8a;
+  --color-chart-3: #6b6b6b; /* 3.5:1 on --color-card (WCAG 1.4.11); the old #3a3a3a was 1.6:1 */
+  --color-chart-previous: #bdbdbd; /* the dashed line of the compared period, and the legend text */
+  --color-chart-cursor: rgb(255 255 255 / 0.04); /* the column under the pointer */
+
+  --font-display: var(--font-archivo), sans-serif;
+  --font-sans: var(--font-inter), sans-serif;
+
+  --animate-snackbar-in: snackbar-in 180ms ease-out;
+  --animate-snackbar-progress: snackbar-progress 4s linear forwards;
+  --animate-field-shake: field-shake 350ms ease-in-out 1;
+  --animate-sheet-in: sheet-in 200ms ease-out;
+  --animate-birthday-fx: birthday-fx 5s linear forwards;
+  --animate-birthday-pop: birthday-pop 5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* Birthday celebration: visible until 84 % of its 5 s, then fades. */
+@keyframes birthday-fx {
+  0%,
+  84% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes birthday-pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  10%,
+  84% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes field-shake {
+  25% {
+    transform: translateX(-3px);
+  }
+  75% {
+    transform: translateX(3px);
+  }
+}
+
+@keyframes snackbar-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes snackbar-progress {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+body {
+  background: var(--color-bg);
+  color: #ffffff;
+}

@@ -1,0 +1,52 @@
+image: node:24-bookworm
+
+# Los PR y dev ejecutan lint, tests y build. Este pipeline solo verifica; no despliega.
+
+definitions:
+  caches:
+    pnpm-store: .pnpm-store
+
+  steps:
+    - step: &lint
+        name: Lint
+        caches:
+          - pnpm-store
+        script:
+          - corepack enable
+          - pnpm install --frozen-lockfile --store-dir .pnpm-store
+          - pnpm run lint
+
+    - step: &unit-tests
+        name: Unit tests
+        caches:
+          - pnpm-store
+        script:
+          - corepack enable
+          - pnpm install --frozen-lockfile --store-dir .pnpm-store
+          - pnpm test
+
+    - step: &build
+        name: Build
+        caches:
+          - pnpm-store
+        script:
+          - corepack enable
+          - pnpm install --frozen-lockfile --store-dir .pnpm-store
+          # La app valida esta variable al iniciar; el build solo necesita una URL valida.
+          - export NEXT_PUBLIC_API_URL=http://localhost:4000
+          - pnpm run build
+
+pipelines:
+  pull-requests:
+    '**':
+      - parallel:
+          - step: *lint
+          - step: *unit-tests
+          - step: *build
+
+  branches:
+    dev:
+      - parallel:
+          - step: *lint
+          - step: *unit-tests
+          - step: *build

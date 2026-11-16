@@ -1,0 +1,55 @@
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+import { ApiError } from "@/lib/api/errors";
+import { apiFetchServer } from "@/lib/api/server";
+import type { ClientPage } from "@/lib/api/types";
+
+import { getClients } from "./get-clients";
+
+vi.mock("@/lib/api/server");
+
+const apiFetchServerMock = vi.mocked(apiFetchServer);
+
+const emptyPage: ClientPage = { items: [], total: 0, page: 1, pageSize: 20 };
+
+describe("getClients", () => {
+  beforeEach(() => {
+    apiFetchServerMock.mockReset();
+  });
+
+  it("asks for the active list without a status, as the page size", async () => {
+    apiFetchServerMock.mockResolvedValue(Response.json(emptyPage));
+
+    await getClients({ q: "", page: 1, status: "active", expiringSoon: false });
+
+    expect(apiFetchServerMock).toHaveBeenCalledWith("/api/v1/staff/clients?page=1&pageSize=20");
+  });
+
+  it("sends the search, the page and the deactivated status", async () => {
+    apiFetchServerMock.mockResolvedValue(Response.json(emptyPage));
+
+    await getClients({ q: "ana", page: 2, status: "deactivated", expiringSoon: false });
+
+    expect(apiFetchServerMock).toHaveBeenCalledWith(
+      "/api/v1/staff/clients?q=ana&page=2&pageSize=20&status=deactivated",
+    );
+  });
+
+  it("asks for the clients about to expire with expiringSoon=true", async () => {
+    apiFetchServerMock.mockResolvedValue(Response.json(emptyPage));
+
+    await getClients({ q: "", page: 1, status: "active", expiringSoon: true });
+
+    expect(apiFetchServerMock).toHaveBeenCalledWith("/api/v1/staff/clients?page=1&pageSize=20&expiringSoon=true");
+  });
+
+  it("returns the parsed page and throws the API error", async () => {
+    apiFetchServerMock.mockResolvedValueOnce(Response.json(emptyPage));
+    await expect(getClients({ q: "", page: 1, status: "active", expiringSoon: false })).resolves.toEqual(emptyPage);
+
+    apiFetchServerMock.mockResolvedValueOnce(
+      Response.json({ statusCode: 500, code: "INTERNAL_ERROR", message: "x" }, { status: 500 }),
+    );
+    await expect(getClients({ q: "", page: 1, status: "active", expiringSoon: false })).rejects.toBeInstanceOf(ApiError);
+  });
+});

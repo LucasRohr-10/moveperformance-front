@@ -1,0 +1,52 @@
+# Learn more about .gitignore: https://www.atlassian.com/git/tutorials/saving-changes/gitignore
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# testing
+/coverage
+
+# env files
+.env
+.env*.local
+
+# vercel
+.vercel
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# misc
+.DS_Store
+Thumbs.db
+*.log
+
+# IDEs
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Claude Code / Superpowers (local-only artifacts)
+.claude/settings.local.json
+.claude/daily-update.md
+CLAUDE.local.md
+.worktrees/
+docs/superpowers/
